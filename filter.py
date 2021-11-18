@@ -1,27 +1,45 @@
 from PIL import Image
 import numpy as np
-img = Image.open("img2.jpg")
-arr = np.array(img)
-a = len(arr)
-a1 = len(arr[1])
-i = 0
-while i < a:
-    j = 0
-    while j < a1:
-        s = 0
-        for n in range(i, min(i + 10, a)):
-            for m in range(j, min(j + 10, a1)):
-                M = int(arr[n][m][0])
-                M += arr[n][m][1]
-                M += arr[n][m][2]
-                s += M
-        s = int(s // (100 * 3))
-        for n in range(i, min(i + 10, a)):
-            for n1 in range(j, min(j + 10, a1)):
-                arr[n][n1][0] = int(s // 50) * 50
-                arr[n][n1][1] = int(s // 50) * 50
-                arr[n][n1][2] = int(s // 50) * 50
-        j = j + 10
-    i = i + 10
-res = Image.fromarray(arr)
-res.save('res.jpg')
+
+
+def solveMiddleBright(pixels, curX, curY, pixelSide):
+    lenX = len(pixels)
+    lenY = len(pixels[1])
+    middle = 0
+    for offsetX in range(curX, min(curX + pixelSide, lenX)):
+        for offsetY in range(curY, min(curY + pixelSide, lenY)):
+            middle += sum(pixels[offsetX][offsetY])
+
+    return int(middle // (pixelSide ** 2 * 3))
+
+
+def replacePixelsMiddleBright(pixels, curX, curY, pixelSide, gradation, middle):
+    lenX = len(pixels)
+    lenY = len(pixels[1])
+    for offsetX in range(curX, min(curX + pixelSide, lenX)):
+        for offsetY in range(curY, min(curY + pixelSide, lenY)):
+            pixels[offsetX][offsetY] = int(middle // gradation) * gradation
+
+
+def solveGradationCoef(gradationCount):
+    return 256 / gradationCount
+
+
+def run():
+    img = Image.open("img-test.png").convert("RGB")
+    pixels = np.array(img)
+    lenX = len(pixels)
+    lenY = len(pixels[1])
+    pixelSide = 1
+    gradationCoef = solveGradationCoef(3)
+
+    for curX in range(0, lenX, pixelSide):
+        for curY in range(0, lenY, pixelSide):
+            middle = solveMiddleBright(pixels, curX, curY, pixelSide)
+            replacePixelsMiddleBright(pixels, curX, curY, pixelSide, gradationCoef, middle)
+
+    res = Image.fromarray(pixels)
+    res.save('res.jpg')
+
+
+run()
