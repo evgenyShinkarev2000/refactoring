@@ -25,21 +25,47 @@ def solveGradationCoef(gradationCount):
     return 256 / gradationCount
 
 
-def run():
-    img = Image.open("img-test.png").convert("RGB")
-    pixels = np.array(img)
+def filterImage(pixels, pixelSide=5, gradationCount=5):
     lenX = len(pixels)
     lenY = len(pixels[1])
-    pixelSide = 1
-    gradationCoef = solveGradationCoef(3)
+    gradationCoef = solveGradationCoef(gradationCount)
 
     for curX in range(0, lenX, pixelSide):
         for curY in range(0, lenY, pixelSide):
             middle = solveMiddleBright(pixels, curX, curY, pixelSide)
             replacePixelsMiddleBright(pixels, curX, curY, pixelSide, gradationCoef, middle)
 
+def program():
+    imgName = input("Введите имя файла: ")
+    if imgName == "":
+        imgName = "img2.jpg"
+
+    targetImgName = input("Введите имя выходного файла: ")
+    if targetImgName == "":
+        targetImgName = "rex.jpg"
+
+    pixelSide, gradation = input("Введите размер пикселя и кол-во градаций серого: ").split(",")
+    if pixelSide == "":
+        pixelSide = 5
+    if gradation == "":
+        gradation = 10
+    print("Ждите")
+
+    img = Image.open(imgName).convert("RGB")
+    pixels = np.array(img)
+    filterImage(pixels, int(pixelSide), int(gradation))
     res = Image.fromarray(pixels)
-    res.save('res.jpg')
+    res.save(targetImgName)
+
+
+def run():
+    program()
+    while True:
+        flag = input("продолжить(y/n): ").lower()
+        if flag == "y":
+            program()
+        elif flag == "n":
+            break
 
 
 run()
