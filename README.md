@@ -10,3 +10,5 @@
 ![доктест](screenshots/doctests.png)
 инспектор ругается на дублирование кода, но так и было задумано
 ![инспектор](screenshots/inspect.png)
+значения из дебаггера 
+![дебаггер](screenshots/debugger.png)
