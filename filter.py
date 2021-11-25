@@ -2,7 +2,20 @@ from PIL import Image
 import numpy as np
 
 
+
 def solveMiddleBright(pixels, curX, curY, maxX, maxY):
+    """
+    :param pixels: изображение
+    :param curX: начальная x координата
+    :param curY: начальная y координата
+    :param maxX: конечная x координата
+    :param maxY: конечная y координата
+    :return среднея яркость пикселей в указаном диапозоне
+
+    >>> solveMiddleBright(np.array([[[1, 1, 1], [2, 2, 2]], [[3, 3, 3], [4, 4, 4]]]), 0, 0, 2, 2)
+    2.5
+
+    """
     return np.mean(pixels[curX:maxX, curY:maxY, 0:3])
 
 
@@ -11,6 +24,10 @@ def replacePixelsMiddleBright(pixels, curX, curY, maxX, maxY, gradationCoef, mid
 
 
 def solveGradationCoef(gradationCount):
+    """
+    >>> solveGradationCoef(255)
+    1
+    """
     return 255 / gradationCount
 
 
@@ -50,5 +67,9 @@ def run():
         elif flag == "n":
             break
 
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
 
 run()
