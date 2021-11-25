@@ -8,3 +8,5 @@
 ![после обработки](screenshots/Lenna_convert.png)
 доктесты
 ![доктест](screenshots/doctests.png)
+инспектор ругается на дублирование кода, но так и было задумано
+![инспектор](screenshots/inspect.png)

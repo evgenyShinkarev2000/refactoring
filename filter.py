@@ -2,7 +2,6 @@ from PIL import Image
 import numpy as np
 
 
-
 def solveMiddleBright(pixels, curX, curY, maxX, maxY):
     """
     :param pixels: изображение
@@ -19,13 +18,13 @@ def solveMiddleBright(pixels, curX, curY, maxX, maxY):
     return np.mean(pixels[curX:maxX, curY:maxY, 0:3])
 
 
-def replacePixelsMiddleBright(pixels, curX, curY, maxX, maxY, gradationCoef, middle):
-    pixels[curX:maxX, curY:maxY] = np.uint8((middle // gradationCoef) * gradationCoef)
+def replacePixelsMiddleBright(pixels, curX, curY, maxX, maxY, gradationRatio, middle):
+    pixels[curX:maxX, curY:maxY] = np.uint8((middle // gradationRatio) * gradationRatio)
 
 
-def solveGradationCoef(gradationCount):
+def solveGradationRatio(gradationCount):
     """
-    >>> solveGradationCoef(255)
+    >>> solveGradationRatio(255)
     1
     """
     return 255 / gradationCount
@@ -34,14 +33,14 @@ def solveGradationCoef(gradationCount):
 def filterImage(pixels, pixelSide, gradationCount):
     lenX = len(pixels)
     lenY = len(pixels[1])
-    gradationCoef = solveGradationCoef(gradationCount)
+    gradationRatio = solveGradationRatio(gradationCount)
 
     for curX in range(0, lenX, pixelSide):
         for curY in range(0, lenY, pixelSide):
             maxX = min(curX + pixelSide, lenX)
             maxY = min(curY + pixelSide, lenY)
             middle = solveMiddleBright(pixels, curX, curY, maxX, maxY)
-            replacePixelsMiddleBright(pixels, curX, curY, maxX, maxY, gradationCoef, middle)
+            replacePixelsMiddleBright(pixels, curX, curY, maxX, maxY, gradationRatio, middle)
 
 
 def program():
