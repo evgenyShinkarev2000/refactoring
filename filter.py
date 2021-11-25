@@ -2,53 +2,34 @@ from PIL import Image
 import numpy as np
 
 
-def solveMiddleBright(pixels, curX, curY, pixelSide):
-    lenX = len(pixels)
-    lenY = len(pixels[1])
-    middle = 0
-    for offsetX in range(curX, min(curX + pixelSide, lenX)):
-        for offsetY in range(curY, min(curY + pixelSide, lenY)):
-            middle += sum(pixels[offsetX][offsetY])
-
-    return int(middle // (pixelSide ** 2 * 3))
+def solveMiddleBright(pixels, curX, curY, maxX, maxY):
+    return np.mean(pixels[curX:maxX, curY:maxY, 0:3])
 
 
-def replacePixelsMiddleBright(pixels, curX, curY, pixelSide, gradation, middle):
-    lenX = len(pixels)
-    lenY = len(pixels[1])
-    for offsetX in range(curX, min(curX + pixelSide, lenX)):
-        for offsetY in range(curY, min(curY + pixelSide, lenY)):
-            pixels[offsetX][offsetY] = int(middle // gradation) * gradation
+def replacePixelsMiddleBright(pixels, curX, curY, maxX, maxY, gradationCoef, middle):
+    pixels[curX:maxX, curY:maxY] = np.uint8((middle // gradationCoef) * gradationCoef)
 
 
 def solveGradationCoef(gradationCount):
-    return 256 / gradationCount
+    return 255 / gradationCount
 
-
-def filterImage(pixels, pixelSide=5, gradationCount=5):
+def filterImage(pixels, pixelSide, gradationCount):
     lenX = len(pixels)
     lenY = len(pixels[1])
     gradationCoef = solveGradationCoef(gradationCount)
 
     for curX in range(0, lenX, pixelSide):
         for curY in range(0, lenY, pixelSide):
-            middle = solveMiddleBright(pixels, curX, curY, pixelSide)
-            replacePixelsMiddleBright(pixels, curX, curY, pixelSide, gradationCoef, middle)
+            maxX = min(curX + pixelSide, lenX)
+            maxY = min(curY + pixelSide, lenY)
+            middle = solveMiddleBright(pixels, curX, curY, maxX, maxY)
+            replacePixelsMiddleBright(pixels, curX, curY, maxX, maxY, gradationCoef, middle)
 
 def program():
-    imgName = input("Введите имя файла: ")
-    if imgName == "":
-        imgName = "img2.jpg"
-
-    targetImgName = input("Введите имя выходного файла: ")
-    if targetImgName == "":
-        targetImgName = "rex.jpg"
-
-    pixelSide, gradation = input("Введите размер пикселя и кол-во градаций серого: ").split(",")
-    if pixelSide == "":
-        pixelSide = 5
-    if gradation == "":
-        gradation = 10
+    imgName = input("Введите имя файла: ") or "Lenna.png"
+    targetImgName = input("Введите имя выходного файла: ") or "res.jpg"
+    pixelSide = input("Введите размер пикселя: ") or 10
+    gradation = input("Введите кол-во градаций серого: ") or 5
     print("Ждите")
 
     img = Image.open(imgName).convert("RGB")
