@@ -13,6 +13,7 @@ def replacePixelsMiddleBright(pixels, curX, curY, maxX, maxY, gradationCoef, mid
 def solveGradationCoef(gradationCount):
     return 255 / gradationCount
 
+
 def filterImage(pixels, pixelSide, gradationCount):
     lenX = len(pixels)
     lenY = len(pixels[1])
@@ -24,6 +25,7 @@ def filterImage(pixels, pixelSide, gradationCount):
             maxY = min(curY + pixelSide, lenY)
             middle = solveMiddleBright(pixels, curX, curY, maxX, maxY)
             replacePixelsMiddleBright(pixels, curX, curY, maxX, maxY, gradationCoef, middle)
+
 
 def program():
     imgName = input("Введите имя файла: ") or "Lenna.png"
